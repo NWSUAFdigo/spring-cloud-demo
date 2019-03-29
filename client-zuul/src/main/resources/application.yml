@@ -1,0 +1,22 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: client-zuul
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8090/eureka/
+
+zuul:
+  routes:
+    ribbon:
+      path: /ribbon/**
+      serviceId: client-ribbon
+    feign:
+      path: /feign/**
+      serviceId: client-feign
