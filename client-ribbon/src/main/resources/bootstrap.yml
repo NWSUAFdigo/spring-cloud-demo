@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: client-ribbon
+  cloud:
+    config:
+      label: master
+      uri: http://localhost:8071
+      profile: dev

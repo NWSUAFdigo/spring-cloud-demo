@@ -1,0 +1,15 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/NWSUAFdigo/spring-cloud-demo-config.git
+          search-paths: respo
+          username: wudi9426@163.com
+          password: wudi27992
+      label: master
