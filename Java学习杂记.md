@@ -112,7 +112,7 @@ B-Tree索引使用与 =, >=, <=, like 'a%'进行查找, 因为B-Tree索引按顺
 
     ```yml
     eureka:
-    	client:
+        client:
           registerWithEureka: true # 默认为true
           fetchRegistry: true # 默认为true
           serviceUrl:
@@ -295,13 +295,13 @@ B-Tree索引使用与 =, >=, <=, like 'a%'进行查找, 因为B-Tree索引按顺
     ```yml
     # 已忽略 eureka-client配置, 端口配置, application-name配置
     zuul:
-    	routes:
-    		{名称}:
-    			path: /{名称}/**
-    			serviceId: 服务消费名称
-    		{名称}:
-    			path: /{名称}/**
-    			serviceId: 服务消费名称
+        routes:
+    	    {名称}:
+    		    path: /{名称}/**
+    		    serviceId: 服务消费名称
+    	    {名称}:
+    		    path: /{名称}/**
+    		    serviceId: 服务消费名称
     ```
 
 - 服务过滤器
