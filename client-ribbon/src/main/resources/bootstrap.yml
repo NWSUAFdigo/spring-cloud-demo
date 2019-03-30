@@ -1,8 +1,20 @@
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8090/eureka/
+
 spring:
   application:
     name: client-ribbon
   cloud:
     config:
       label: master
-      uri: http://localhost:8071
+      # 不再直接输入config-server的ip, 而是从注册中心获取配置微服务
+      # 由于从注册中心获取微服务, 所以注册中心配置应该放到此文件中, 而不能放到application.yml中
+      # uri: http://localhost:8071
       profile: dev
+      discovery:
+        enabled: true
+        service-id: config-server

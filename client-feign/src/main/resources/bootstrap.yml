@@ -1,6 +1,16 @@
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8090/eureka/
+
 spring:
   cloud:
     config:
       profile: dev
       label: master
-      uri: http://localhost:8071
+      # uri: http://localhost:8071
+      discovery:
+        enabled: true
+        service-id: config-server

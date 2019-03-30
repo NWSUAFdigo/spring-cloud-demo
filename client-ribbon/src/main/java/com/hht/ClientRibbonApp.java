@@ -18,6 +18,7 @@ public class ClientRibbonApp {
         SpringApplication.run(ClientRibbonApp.class, args);
     }
 
+    // 添加负载均衡
     @Bean
     @LoadBalanced
     RestTemplate restTemplate() {
