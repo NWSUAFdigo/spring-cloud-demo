@@ -335,3 +335,130 @@ B-Tree索引使用与 =, >=, <=, like 'a%'进行查找, 因为B-Tree索引按顺
       }
   }
   ```
+
+#### 配置中心(config)
+
+- 统一的配置中心, 对各个微服务的配置进行统一管理
+
+- 配置文件可以单独创建git仓库存放, 也可以在本地存放
+
+- 配置中心属于一个单独服务(类似eureka)
+
+- 配置中心(config-server)配置步骤
+
+  - pom文件添加`config-server`额外依赖
+
+  - Application类添加`@EnableConfigServer`注解
+
+  - application.yml配置
+
+    ```yml
+    spring:
+    	cloud:
+    		config:
+    			server:
+    				git:
+    					uri: 配置中心git仓库地址
+    					searchPath: 配置仓库路径
+    					username: git账号
+    					password: git密码
+    				label: git分支
+    ```
+
+- 远程创建git仓库如下
+
+  ![config-1](images/config-1.png)
+
+  - 包含两个配置文件, 分别为: `client-feign-dev.properties` 和 `client-ribbon-dev.properties`
+
+- 配置中心服务(config-server)读取配置文件读取方式
+
+  - 假设config-server服务的端口为8888
+  - /{application-name}/{profile}/[可选{label}]
+    - 示例:`http://ip:8888/client-feign/dev/[master]`
+  - /{application-name}-{profile}.yml
+    - 示例:` http://ip:8888/client-feign-dev.yml`
+  - /{application-name}-{profile}.properties
+    - 示例:` http://ip:8888/client-feign-dev.properties`
+  - /{label}/{application-name}-{profile}.yml
+    - 示例:` http://ip:8888/master/client-feign-dev.yml`
+  - /{label}/{application-name}-{profile}.properties
+    - 示例:` http://ip:8888/master/client-feign-dev.properties`
+
+- 配置客户端(config-client)配置步骤
+
+  - pom文件添加`config`依赖
+
+  - Application类无需添加额外内容
+
+  - application.yml配置
+
+    ```yml
+    spring:
+    	cloud:
+    		config:
+    			label: git分支
+    			profile: 摘要
+    			uri: config-server服务地址
+    ```
+
+  - 此时就可以访问名称为`{config-client-name}-{profile}.properties`在{label}分支下的配置文件
+
+  - 访问示例
+
+    ```java
+    // spring业务bean内部
+    
+    @Value("${name}")
+    String name;
+    @Value("${age}")
+    int age;
+    
+    @GetMapping("/test")
+    public String test() {
+        return "name = " + name + ", age = " + age;
+    }
+    ```
+
+#### 注册配置中心到Eureka
+
+- 配置中心(config-server)可以添加到注册中心中, 并进行集群
+
+- 操作步骤
+
+  - 配置中心(config-service)修改
+
+    - pom文件添加`eureka-client`依赖
+
+    - Application类添加`@EnableEurekaClient`注解
+
+    - application.yml中注册服务到eureka
+
+      ```yml
+      eureka:
+      	client:
+      		serviceUrl:
+      			defaultZone: eureka服务地址
+      ```
+
+  - 配置客户端(config-client)修改
+
+    - pom文件添加`eureka-client`依赖
+
+    - Application类添加`@EnableEurekaClient`注解
+
+    - application.yml中不再输入config-server服务地址
+
+      ```yml
+      spring:
+      	cloud:
+      		config:
+      			label: git分支
+      			profile: 摘要
+      			# uri: config-server服务地址
+      			discovery:
+      				enabled: true # 配置中心允许发现
+      				serviceId: config-server-name(服务名称)
+      ```
+
+- 此时config-server已经注册到eureka, 可以进行集群操作并访问
